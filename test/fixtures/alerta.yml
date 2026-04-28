@@ -1,13 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  completado: false
-  informeid: 1
-  prioridadid: 1
+  estado: false
+  informe_id: 980190962
+  created_at: '2018-12-15 00:00:00'
+  updated_at: '2018-12-15 00:00:00'
+  prioridad: MyString
   fecharecepcion: 2018-12-15
 
 two:
-  completado: false
-  informeid: 1
-  prioridadid: 1
+  estado: false
+  informe_id: 298486374
+  created_at: '2018-12-15 00:00:00'
+  updated_at: '2018-12-15 00:00:00'
+  prioridad: MyString
   fecharecepcion: 2018-12-15

@@ -1,8 +1,8 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  estudianteid: 1
-  usuarioid: 1
+  estudiante: one
+  user: one
   nota1: 1
   nota2: 1
   nota3: 1
@@ -24,8 +24,8 @@ one:
   observacion: MyString
 
 two:
-  estudianteid: 1
-  usuarioid: 1
+  estudiante: one
+  user: one
   nota1: 1
   nota2: 1
   nota3: 1
