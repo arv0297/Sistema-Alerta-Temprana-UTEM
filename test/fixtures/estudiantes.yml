@@ -6,7 +6,6 @@ one:
   situacioneconomica: MyString
   colegio: MyString
   ranking: 9.99
-  usuarioid: 1
 
 two:
   nombreestudiante: MyString
@@ -14,4 +13,3 @@ two:
   situacioneconomica: MyString
   colegio: MyString
   ranking: 9.99
-  usuarioid: 1

@@ -3,9 +3,9 @@
 one:
   nombrecarrera: MyString
   codigo: MyString
-  facultadid: 1
+  facultad: one
 
 two:
   nombrecarrera: MyString
   codigo: MyString
-  facultadid: 1
+  facultad: one

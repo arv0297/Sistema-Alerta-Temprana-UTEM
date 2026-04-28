@@ -1,4 +1,4 @@
-<h1>Informes <% if current_user.rol.descripcion!='Administrador'%><%= current_user.rol.descripcion%><%end%></h1>
+<h1>Informes <% if current_user&.rol&.descripcion!='Administrador'%><%= current_user&.rol&.descripcion%><%end%></h1>
 <%= link_to 'Generar Informe', new_informe_path, :class => "btn btn-info" %>
 <Table class="table">
   <tr>
@@ -14,12 +14,12 @@
 
   <% @informes.each do |t| %>
   
-  <% if (t.user.rol.descripcion==current_user.rol.descripcion && t.estado==true) || current_user.rol.descripcion=='Administrador' %>
+  <% if (t.user&.rol&.descripcion==current_user&.rol&.descripcion && t.estado==true) || current_user&.rol.descripcion=='Administrador' %>
   <tr>
   <td><%= t.id %></td>
   <td><%= t.estudiante.nombreestudiante %> <%= t.estudiante.apellidopa %> <%= t.estudiante.apellidoma %></td>
-  <td><%= t.estudiante.carrera.nombrecarrera %></td>
-  <td><%= t.user.nombre %> <%= t.user.apellidopa %> <t.user.apellidoma%></td>
+  <td><%= t.estudiante&.carrera&.nombrecarrera %></td>
+  <td><%= t.user.nombre %> <%= t.user.apellidopa %> <=t.user.apellidoma%></td>
   <td>
   <%if t.estado ==true %>
  <p class= "text-success"> Activo</p> 

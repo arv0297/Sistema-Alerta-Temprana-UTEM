@@ -6,7 +6,7 @@
   </div>
 <% end %>
 
-<% if current_user.rol.descripcion == "Sicologo" %>
+<% if current_user&.rol&.descripcion == "Sicologo" %>
 
 
 <center><h1 class= text-info ><u> Informe Profesional Sicológico </u></h1><br></center>
@@ -130,7 +130,7 @@
 
 <%end%>
 
-<% if current_user.rol.descripcion == "Tutor" %>
+<% if current_user&.rol&.descripcion == "Tutor" %>
 <center><h1 class= text-info ><u> Informe Tutoria </u></h1><br></center>
 <%=form_for( @informes) do |f| %>
   <label class="text-dark"><u>Profesional :</u> <%=current_user.nombre%> <%=current_user.apellidopa%> <%=current_user.apellidoma%></label>
@@ -248,7 +248,7 @@
 
 <%end%>
 
-<% if current_user.rol.descripcion == "Asistente Social" %>
+<% if current_user&.rol&.descripcion == "Asistente Social" %>
 <center><h1 class= text-info ><u> Informe Profesional Asistente Social </u></h1><br></center>
 <%=form_for( @informes) do |f| %>
   <label class="text-dark"><u>Profesional :</u> <%=current_user.nombre%> <%=current_user.apellidopa%> <%=current_user.apellidoma%></label>
@@ -366,7 +366,7 @@
 
 <%end%>
 
-<% if current_user.rol.descripcion == "Jefe de Carrera" %>
+<% if current_user&.rol&.descripcion == "Jefe de Carrera" %>
 <center><h1 class= text-info ><u> Informe Jefe de Carrera</u></h1><br></center>
 <%=form_for( @informes) do |f| %>
   <label class="text-dark"><u>Profesional :</u> <%=current_user.nombre%> <%=current_user.apellidopa%> <%=current_user.apellidoma%></label>
