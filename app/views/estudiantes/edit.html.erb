@@ -1,123 +1,13 @@
-<%= form_for(@estudiante) do |f| %>
-    <% if @estudiante.errors.any? %>
-      <div class="alert alert-info">
-          <%= pluralize(@estudiante.errors.count, "Errores") %>
-      </div>
-
-        <div class="alert alert-danger">
-          <% @estudiante.errors.full_messages.each do |error| %>
-            <li> <%= error %> </li>
-          <% end %>
-        </div>
-    <% end %>
-    
-    <div class="form">
-        <h1 class="text-center">Actualizacion de Estudiante</h1>
-    
-        <div class="row">
-    
-            <div class="col">
-                <div class="field">
-                      <%= f.label :primer_nombre %><br/>
-                      <%= f.text_field :nombreestudiante, autofocus: true, class: "form-control", placeholder: "Primer nombre" %>
-                </div>
-        <br>
-            </div>
-    
-            <div class="col">
-                <div class="field">
-                      <%= f.label :primer_apellido %><br/>
-                      <%= f.text_field :apellidopa, autofocus: true, class: "form-control", placeholder: "Primer apellido" %>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="field">
-                      <%= f.label :segundo_apellido %><br/>
-                      <%= f.text_field :apellidoma, autofocus: true, class: "form-control", placeholder: "Primer apellido" %>
-                </div>
-            </div>
-        </div>
-    
-  
-      <div class="row">
-        <div class="col">
-      <div class="field">
-        <%= f.label :rut %><br/>
-        <%= f.text_field :rut, autofocus: true, class:"form-control", placeholder: "Rut" %>
-      </div><br>
-    </div>
-      <div class="col">
-      <div class="field">
-        <%= f.label :fecha_nacimiento %><br/>
-        <%= f.date_field :fecha_nacimiento, autofocus: true, class:"form-control" %>
-      </div>
-    </div>
-      <div class="col">
-      <div class="field">
-        <%= f.label :email %><br/>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form-control", placeholder: "Email" %>
-      </div>
-    </div>
-    </div>
-    
-    <div class="row">
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Editar Estudiante</h1>
       
-      <div class="col">
-          <div class="field">
-          <%= f.label :celular %><br/>
-          <%= f.text_field :telefono, autofocus: true, class: "form-control", placeholder:"Celular" %>
-         </div>
-      </div>
-      <div class="col">
-                 <div class="field">
-                   <%= f.label :nem %><br/>
-                     <%= f.text_field :nem, autofocus: true, class: "form-control", placeholder:"Ej 1.0 - 7.0" %>
-                 </div>
-      </div>
-  </div>  
-    
-    
-    
-  <br>
-    <div class="row">
-          <div class="col">
-               <div class="field">
-                    <%= f.label :Direccion%><br/>
-                     <%= f.text_field :direccion, autofocus: true, class: "form-control", placeholder:"Ej 1.0 - 7.0" %>
-                </div>
-              </div>
-
-              <div class="col">
-                      <div class="field">
-                             <%= f.label :comuna %>
-                                     <%= f.select :comuna,["Cerrillos","Cerro Navia","Conchali","El Bosque","Estación Central","Huechuraba","Independencia","La Cisterna","La Florida","La Granja","La Pintana","La Reina","Las Condes","Lo barnechea","Lo Espejo","Lo Prado","Macul","Maipú","Ñuñoa","Pedro Aguirre Cerda","Peñalolén","Providencia","Pudahuel","Quilicura","Quinta Normal","Recoleta","Renca","San Joaquín","San Miguel","San Ramón","Santiago","Vitacura"],{:include_blank => "Seleccionar Comuna"},{class:'btn btn-info btn-sm'}%>
-
-                      </div>
-              </div>
-
-              
-
-    
-                <div class="col">
-
-                     <div class="field">
-                        <%= f.label "Estado" %> <br />
-                        <%= f.check_box :estado %> <br />
-                     </div>
-                </div>
-            </div>
-         </div>
-         <p>Carrera: <%= f.collection_select :carrera_id, Carrera.all, :id, :nombrecarrera, {:include_blank => "Seleccionar Carrera"},{class: "btn btn-outline-info btn-sm"}  %>
-<br><br> <H5> Seleccione un Tutor</h5>
-
-<%= f.collection_select :user_id,User.includes(:rol).where(:estado => true ).where("rols.descripcion='Tutor'").references(:rols), :id, :fullname,{include_blank: "Seleccionar Tutor"}, {class: "btn btn-outline-info "}  %>
-
-
-
-      <div class="actions">
-        <%= f.submit "Guardar Usuario" ,class:"btn btn-info"%>
-      </div>
-    <% end %>
+      <%= render 'shared/flash_messages' %>
+      
+      <%= render 'form', estudiante: @estudiante %>
+    </div>
+  </div>
+</div>
 
   

@@ -1,0 +1,342 @@
+<%= form_with(model: estudiante, local: true, html: { class: 'needs-validation', novalidate: true }) do |f| %>
+  <% if estudiante.errors.any? %>
+    <div class="alert alert-danger">
+      <h4 class="alert-heading">
+        <%= pluralize(estudiante.errors.count, "error") %> impidieron guardar el estudiante:
+      </h4>
+      <ul class="mb-0">
+        <% estudiante.errors.full_messages.each do |error| %>
+          <li><%= error %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">
+        <%= estudiante.new_record? ? 'Nuevo Estudiante' : 'Editar Estudiante' %>
+      </h5>
+    </div>
+    <div class="card-body">
+      <!-- Datos Personales -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h6 class="text-muted mb-3">Datos Personales</h6>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :nombreestudiante, 'Primer Nombre', class: 'form-label' %>
+            <%= f.text_field :nombreestudiante, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:nombreestudiante].any?}", 
+                placeholder: 'Ingrese primer nombre',
+                required: true %>
+            <% if estudiante.errors[:nombreestudiante].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:nombreestudiante].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :apellidopa, 'Apellido Paterno', class: 'form-label' %>
+            <%= f.text_field :apellidopa, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:apellidopa].any?}", 
+                placeholder: 'Ingrese apellido paterno',
+                required: true %>
+            <% if estudiante.errors[:apellidopa].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:apellidopa].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :apellidoma, 'Apellido Materno', class: 'form-label' %>
+            <%= f.text_field :apellidoma, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:apellidoma].any?}", 
+                placeholder: 'Ingrese apellido materno',
+                required: true %>
+            <% if estudiante.errors[:apellidoma].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:apellidoma].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identificación y Contacto -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h6 class="text-muted mb-3">Identificación y Contacto</h6>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :rut, 'RUT', class: 'form-label' %>
+            <%= f.text_field :rut, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:rut].any?}", 
+                placeholder: 'Ej: 12.345.678-9',
+                required: true,
+                oninput: 'formatRut(this)',
+                id: 'estudiante_rut' %>
+            <% if estudiante.errors[:rut].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:rut].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :fecha_nacimiento, 'Fecha de Nacimiento', class: 'form-label' %>
+            <%= f.date_field :fecha_nacimiento, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:fecha_nacimiento].any?}", 
+                required: true %>
+            <% if estudiante.errors[:fecha_nacimiento].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:fecha_nacimiento].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :telefono, 'Teléfono', class: 'form-label' %>
+            <%= f.text_field :telefono, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:telefono].any?}", 
+                placeholder: 'Ej: 912345678',
+                maxlength: 9,
+                required: true,
+                id: 'estudiante_telefono' %>
+            <% if estudiante.errors[:telefono].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:telefono].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :email, 'Email', class: 'form-label' %>
+            <%= f.email_field :email, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:email].any?}", 
+                placeholder: 'email@ejemplo.com' %>
+            <% if estudiante.errors[:email].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:email].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos Académicos -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h6 class="text-muted mb-3">Datos Académicos</h6>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :nem, 'NEM', class: 'form-label' %>
+            <%= f.text_field :nem, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:nem].any?}", 
+                placeholder: 'Ej: 6.5',
+                step: '0.1',
+                min: '1.0',
+                max: '7.0',
+                id: 'estudiante_nem' %>
+            <% if estudiante.errors[:nem].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:nem].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :ranking, 'Ranking', class: 'form-label' %>
+            <%= f.text_field :ranking, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:ranking].any?}", 
+                placeholder: 'Ej: 8500' %>
+            <% if estudiante.errors[:ranking].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:ranking].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :situacioneconomica, 'Situación Económica', class: 'form-label' %>
+            <%= f.select :situacioneconomica, 
+                options_for_select([
+                  ['Seleccione', ''],
+                  ['Baja', 'Baja'],
+                  ['Media Baja', 'Media Baja'],
+                  ['Media', 'Media'],
+                  ['Media Alta', 'Media Alta'],
+                  ['Alta', 'Alta']
+                ], estudiante.situacioneconomica),
+                {},
+                { class: "form-control #{'is-invalid' if estudiante.errors[:situacioneconomica].any?}" } %>
+            <% if estudiante.errors[:situacioneconomica].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:situacioneconomica].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <%= f.label :colegio, 'Colegio', class: 'form-label' %>
+            <%= f.text_field :colegio, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:colegio].any?}", 
+                placeholder: 'Nombre del colegio' %>
+            <% if estudiante.errors[:colegio].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:colegio].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ubicación -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h6 class="text-muted mb-3">Ubicación</h6>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label :direccion, 'Dirección', class: 'form-label' %>
+            <%= f.text_field :direccion, 
+                class: "form-control #{'is-invalid' if estudiante.errors[:direccion].any?}", 
+                placeholder: 'Calle, número, departamento',
+                required: true %>
+            <% if estudiante.errors[:direccion].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:direccion].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label :comuna, 'Comuna', class: 'form-label' %>
+            <%= f.select :comuna, 
+                options_for_select([
+                  ['Seleccione', ''],
+                  ['Cerrillos', 'Cerrillos'],
+                  ['Cerro Navia', 'Cerro Navia'],
+                  ['Conchali', 'Conchali'],
+                  ['El Bosque', 'El Bosque'],
+                  ['Estación Central', 'Estación Central'],
+                  ['Huechuraba', 'Huechuraba'],
+                  ['Independencia', 'Independencia'],
+                  ['La Cisterna', 'La Cisterna'],
+                  ['La Florida', 'La Florida'],
+                  ['La Granja', 'La Granja'],
+                  ['La Pintana', 'La Pintana'],
+                  ['La Reina', 'La Reina'],
+                  ['Las Condes', 'Las Condes'],
+                  ['Lo Barnechea', 'Lo Barnechea'],
+                  ['Lo Espejo', 'Lo Espejo'],
+                  ['Lo Prado', 'Lo Prado'],
+                  ['Macul', 'Macul'],
+                  ['Maipú', 'Maipú'],
+                  ['Ñuñoa', 'Ñuñoa'],
+                  ['Pedro Aguirre Cerda', 'Pedro Aguirre Cerda'],
+                  ['Peñalolén', 'Peñalolén'],
+                  ['Providencia', 'Providencia'],
+                  ['Pudahuel', 'Pudahuel'],
+                  ['Quilicura', 'Quilicura'],
+                  ['Quinta Normal', 'Quinta Normal'],
+                  ['Recoleta', 'Recoleta'],
+                  ['Renca', 'Renca'],
+                  ['San Joaquín', 'San Joaquín'],
+                  ['San Miguel', 'San Miguel'],
+                  ['San Ramón', 'San Ramón'],
+                  ['Santiago', 'Santiago'],
+                  ['Vitacura', 'Vitacura']
+                ], estudiante.comuna),
+                {},
+                { class: "form-control #{'is-invalid' if estudiante.errors[:comuna].any?}", required: true } %>
+            <% if estudiante.errors[:comuna].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:comuna].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Asignaciones -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h6 class="text-muted mb-3">Asignaciones</h6>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :carrera_id, 'Carrera', class: 'form-label' %>
+            <%= f.collection_select :carrera_id, Carrera.all.order(:nombrecarrera), :id, :nombrecarrera, 
+                { prompt: 'Seleccionar Carrera' },
+                { class: "form-control #{'is-invalid' if estudiante.errors[:carrera_id].any?}", required: true } %>
+            <% if estudiante.errors[:carrera_id].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:carrera_id].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :user_id, 'Tutor', class: 'form-label' %>
+            <%= f.collection_select :user_id, @users, :id, :fullname, 
+                { prompt: 'Seleccionar Tutor' },
+                { class: "form-control #{'is-invalid' if estudiante.errors[:user_id].any?}" } %>
+            <% if estudiante.errors[:user_id].any? %>
+              <div class="invalid-feedback">
+                <%= estudiante.errors[:user_id].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= f.label :estado, 'Estado', class: 'form-label' %>
+            <div class="pt-2">
+              <div class="form-check form-check-inline">
+                <%= f.radio_button :estado, true, class: 'form-check-input' %>
+                <%= f.label :estado_activo, 'Activo', class: 'form-check-label' %>
+              </div>
+              <div class="form-check form-check-inline">
+                <%= f.radio_button :estado, false, class: 'form-check-input' %>
+                <%= f.label :estado_inactivo, 'Inactivo', class: 'form-check-label' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group mt-4">
+    <%= f.submit estudiante.new_record? ? 'Crear Estudiante' : 'Actualizar Estudiante', 
+        class: 'btn btn-primary' %>
+    <%= link_to 'Cancelar', estudiantes_path, class: 'btn btn-secondary ml-2' %>
+  </div>
+<% end %>

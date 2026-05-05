@@ -1,71 +1,101 @@
 class EstudiantesController < ApplicationController
-  layout"prueba"
-  before_action :set_estudiante, only: [:show,:delete,:edit,:update]
-    def index
-        @estudiantes=Estudiante.all
-        @users=User.all
-        end
-      
-        def show
-         @estudiante= Estudiante.find(params[:id])
-        end 
-      
+  layout 'prueba'
+  before_action :set_estudiante, only: [:show, :edit, :update, :destroy]
+  before_action :set_users, only: [:new, :edit, :update]
+  before_action :authorize_admin!, only: [:new, :create, :edit, :update, :destroy]
 
-        def delete
-          #@user.destroy
-          @estudiante.estado = false
-          @estudiante.save
-              redirect_to estudiantes_path, success: "Se ha desvinculado el usuario"
-        end
-      
-      
-        def update
-          respond_to do |format| 
-          if @estudiante.update(estudiante_params)
-            format.html { redirect_to estudiantes_path, success: "Se Actualizaron los datos"}
-          else
-            format.html { redirect_to edit_estudiante_path, danger: "No se genero el cambio"}
-          end
-            end
-            end
+  # GET /estudiantes
+  def index
+    @estudiantes = Estudiante.includes(:carrera, :user).order(:nombreestudiante)
+    @users = User.all
+  end
 
-        def edit
-          @estudiante = Estudiante.find(params[:id])
-         
-        end
+  # GET /estudiantes/1
+  def show
+    # @estudiante is set by before_action
+  end
 
+  # GET /estudiantes/new
+  def new
+    @estudiante = Estudiante.new
+  end
 
-        def new
-      
-         @estudiante= Estudiante.new
-         @users = User.all
-   
-       
+  # GET /estudiantes/1/edit
+  def edit
+    # @estudiante is set by before_action
+  end
 
-        end
-    def create
-   
-      
-      @estudiante= Estudiante.new(estudiante_params)
-       
-      respond_to do |format| 
+  # POST /estudiantes
+  def create
+    @estudiante = Estudiante.new(estudiante_params)
+
+    respond_to do |format|
       if @estudiante.save
-      format.html {redirect_to estudiantes_path, success: "Se Registro Estudiante"}
+        format.html { redirect_to @estudiante, success: 'Estudiante creado exitosamente.' }
+        format.json { render :show, status: :created, location: @estudiante }
       else
-      format.html {render :new}
-      end
+        format.html { render :new }
+        format.json { render json: @estudiante.errors, status: :unprocessable_entity }
       end
     end
+  end
 
-    private
-def estudiante_params
-  params.require(:estudiante).permit(:nombreestudiante, :nem, :situacioneconomica,:colegio,:ranking, :carrera_id,:user_id,:fecha_nacimiento, :estado, :rut, :telefono, :email, :apellidopa, :apellidoma, :comuna, :direccion, :users_id)
-end
+  # PATCH/PUT /estudiantes/1
+  def update
+    respond_to do |format|
+      if @estudiante.update(estudiante_params)
+        format.html { redirect_to @estudiante, success: 'Estudiante actualizado exitosamente.' }
+        format.json { render :show, status: :ok, location: @estudiante }
+      else
+        format.html { render :edit }
+        format.json { render json: @estudiante.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
-def set_estudiante
-  @estudiante = Estudiante.find(params[:id])
-end
+  # DELETE /estudiantes/1
+  def destroy
+    if @estudiante.update(estado: false)
+      redirect_to estudiantes_path, success: 'Estudiante desactivado exitosamente.'
+    else
+      redirect_to estudiantes_path, danger: 'No se pudo desactivar el estudiante.'
+    end
+  end
 
+  private
 
+  def set_estudiante
+    @estudiante = Estudiante.find(params[:id])
+  end
 
+  def set_users
+    @users = User.includes(:rol).where(estado: true)#.where(rols: { descripcion: 'Tutor' })
+  end
+
+  def estudiante_params
+    params.require(:estudiante).permit(
+      :nombreestudiante,
+      :nem,
+      :situacioneconomica,
+      :colegio,
+      :ranking,
+      :carrera_id,
+      :user_id,
+      :fecha_nacimiento,
+      :estado,
+      :rut,
+      :telefono,
+      :email,
+      :apellidopa,
+      :apellidoma,
+      :comuna,
+      :direccion
+    )
+  end
+
+  def authorize_admin!
+    return if current_user&.rol&.descripcion == 'Administrador'
+    
+    redirect_to root_path, danger: 'No tienes permisos para realizar esta acción.'
+  end
 end

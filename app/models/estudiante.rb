@@ -1,5 +1,5 @@
 class Estudiante < ApplicationRecord
-  has_and_belongs_to_many :users, optional:true
+  belongs_to :user, optional: true
   belongs_to :carrera
   has_many :informes
   

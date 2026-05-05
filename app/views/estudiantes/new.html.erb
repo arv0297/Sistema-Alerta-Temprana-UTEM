@@ -1,109 +1,14 @@
-<h1 class="text-info"><u>Agregar Estudiante </u></h1>
-
-<hr> </hr> 
-<%= form_for(@estudiante) do |f| %>
-    <% if @estudiante.errors.any? %>
-    <div class="alert alert-info">
-      <%= pluralize(@estudiante.errors.count, "Errores") %>
-    </div>
-    <div class="alert alert-danger">
-      <% @estudiante.errors.full_messages.each do |error| %>
-      <li> <%= error %> 
-      <% end %>
-    </div>
-    <% end %>
-    <p class="bg-success text-center">Datos Personales </p> 
-    <div class="row">
-  
-        
-            <hr> </hr> 
-            <div class="col-md-4">
-                    <label for="formGroupExampleInput">Nombres </label>
-                    <%= f.text_field:nombreestudiante, placeholder:"Agregar Nombre" , class:"form-control"  %>
-             </div>  
-
-             <div class="col-md-4">
-                     <label for="formGroupExampleInput">Primer Apellido </label>
-                     <%= f.text_field:apellidopa, placeholder:"Primer apellido" , class:"form-control"  %>
-              </div>
-
-              <div class="col-md-4">
-                     <label for="formGroupExampleInput">Segundo Apellido </label>
-                     <%= f.text_field:apellidoma, placeholder:"Ej:" , class:"form-control"  %>
-              </div>             
-              <div class="col">  
-              </div> 
-
-</div>  
-
-
-<div class="row">
-            <div class="col-md-4">  
-               <label for="formGroupExampleInput">RUT  </label>
-               <%= f.text_field:rut, placeholder:"Ej:" , class:"form-control"  %>
-            </div>  
-            <div class="col-md-4">  
-               <label for="formGroupExampleInput">Direccion </label>
-               <%= f.text_field:direccion, placeholder:"Ej:" , class:"form-control"  %>
-            </div>   
-            <div class="col-md-4"> 
-               <label>Comuna</label><br>
-               <%= f.select :comuna,["Cerrillos","Cerro Navia","Conchali","El Bosque","Estación Central","Huechuraba","Independencia","La Cisterna","La Florida","La Granja","La Pintana","La Reina","Las Condes","Lo barnechea","Lo Espejo","Lo Prado","Macul","Maipú","Ñuñoa","Pedro Aguirre Cerda","Peñalolén","Providencia","Pudahuel","Quilicura","Quinta Normal","Recoleta","Renca","San Joaquín","San Miguel","San Ramón","Santiago","Vitacura"],{:include_blank => "Seleccionar Comuna"},{class:'btn btn-info btn-sm'}%>
-            </div> 
-</div>
-<div class="row">            
-            <div class="col-md-4">
-               <%= f.label :fecha_nacimiento %><br/>
-               <%= f.date_field :fecha_nacimiento, autofocus: true, class:"form-control" %>
-               </div>
-
-               <div class="col-md-4">
-               <%= f.label :email %><br/>
-               <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form-control", placeholder: "Ej: ejemplo@ejemplo.cl " %>
-               </div>
-
-               <div class="col">
-               <label for="formGroupExampleInput">Telefono </label>
-               <%= f.text_field :telefono, placeholder:"Ej: 229325003" , class:"form-control"  %>
-       </div>
-
-
-</div>    
-   
-<br><br>
-<p class="bg-info text-center">Datos Academicos</p>
-
-<div class="row">
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Nuevo Estudiante</h1>
       
-     <hr> </hr> 
-         <div class=col-md-4">
-              <label>Notas de Enseñanza Media  </label>
-              <%= f.text_field:nem, placeholder:"Ej:" , class:"form-control"  %>
-         </div>
-       
-         <div class="col-md-4">
-              <label for="formGroupExampleInput">Carrera </label>
-              
-              <%= f.collection_select :carrera_id, Carrera.where(:estado => true), :id, :nombrecarrera, {:include_blank => "Seleccionar Carrera"},{class: "btn btn-outline-info btn-sm"}  %>
-              
-         </div> 
- 
- <div class="col-md-4">
- <label for="formGroupExampleInput">Tutor </label>
- <%= f.collection_select :user_id,User.includes(:rol).where(:estado => true ).where("rols.descripcion='Tutor'").references(:rols), :id, :fullname,{include_blank: "Seleccionar Tutor"}, {class: "btn btn-outline-info btn-sm"}  %>
- </div>
- </div>
- 
-  
- 
-
-<hr> </hr> 
-      <div class="form-actions ">
-      <center>
-      <%= f.submit "Guardar" ,class:"btn btn-info" %> 
-      </center>
-      </div>
-    <% end %>
+      <%= render 'shared/flash_messages' %>
+      
+      <%= render 'form', estudiante: @estudiante %>
+    </div>
+  </div>
+</div>
  
 
 

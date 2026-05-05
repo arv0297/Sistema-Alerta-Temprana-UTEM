@@ -128,6 +128,23 @@ es:
         odd: "debe ser impar"
         even: "debe ser par"
     attributes:
+      estudiante:
+        nombreestudiante: "Nombre"
+        apellidopa: "Apellido paterno"
+        apellidoma: "Apellido materno"
+        rut: "RUT"
+        fecha_nacimiento: "Fecha de nacimiento"
+        email: "Email"
+        telefono: "Teléfono"
+        direccion: "Dirección"
+        comuna: "Comuna"
+        carrera_id: "Carrera"
+        user_id: "Tutor"
+        nem: "NEM"
+        ranking: "Ranking"
+        situacioneconomica: "Situación económica"
+        colegio: "Colegio"
+        estado: "Estado"
       carrera:
         nombrecarrera: "Nombre de la carrera"
         codigo: "Código"

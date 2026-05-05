@@ -1,135 +1,402 @@
-<h1>Estudiantes</h1>
-<%flash.each do |name , msg| %>
-  <div class="alert alert-<%= name %>">
-    <%= msg %>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Estudiantes</h1>
+        <% if current_user&.rol&.descripcion == 'Administrador' %>
+          <%= link_to 'Agregar Estudiante', new_estudiante_path, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+
+      <%= render 'shared/flash_messages' %>
+
+      <!-- Search and Filters -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="searchInput" class="form-label">Buscar Estudiante</label>
+                <input type="text" 
+                       id="searchInput"
+                       class="form-control" 
+                       onkeyup="filterEstudiantes()" 
+                       placeholder="Buscar por nombre...">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Filtros Rápidos</label>
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="filterByStatus('all')">Todos</button>
+                  <button type="button" class="btn btn-outline-success btn-sm" onclick="filterByStatus('active')">Activos</button>
+                  <button type="button" class="btn btn-outline-danger btn-sm" onclick="filterByStatus('inactive')">Inactivos</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Table -->
+      <div class="card">
+        <div class="card-body">
+          <% if @estudiantes.any? %>
+            <div class="table-responsive">
+              <table id="myTable" class="table table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th style="cursor: pointer;" onclick="sortTable(0)" title="Ordenar por nombre">
+                      Nombre Estudiante <i class="fas fa-sort"></i>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(1)" title="Ordenar por carrera">
+                      Carrera <i class="fas fa-sort"></i>
+                    </th>
+                    <th style="cursor: pointer;" onclick="sortTable(2)" title="Ordenar por estado">
+                      Estado <i class="fas fa-sort"></i>
+                    </th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @estudiantes.each do |estudiante| %>
+                    <tr class="<%= 'table-warning' unless estudiante.estado %>">
+                      <td>
+                        <strong><%= estudiante.fullname %></strong><br>
+                        <small class="text-muted">RUT: <%= estudiante.rut %></small>
+                      </td>
+                      <td>
+                        <%= estudiante.carrera&.nombrecarrera || 'Sin asignar' %>
+                      </td>
+                      <td>
+                        <% if estudiante.estado %>
+                          <span class="badge badge-success">Activo</span>
+                        <% else %>
+                          <span class="badge badge-danger">Inactivo</span>
+                        <% end %>
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group" role="group">
+                          <%= link_to estudiante_path(estudiante), 
+                              class: "btn btn-sm btn-outline-info", 
+                              title: "Ver detalles",
+                              data: { toggle: 'tooltip' } do %>
+                            <i class="fas fa-eye"></i>
+                          <% end %>
+                          
+                          <% if current_user&.rol&.descripcion == 'Administrador' %>
+                            <%= link_to edit_estudiante_path(estudiante), 
+                                class: "btn btn-sm btn-outline-warning", 
+                                title: "Editar",
+                                data: { toggle: 'tooltip' } do %>
+                              <i class="fas fa-edit"></i>
+                            <% end %>
+                            
+                            <% if estudiante.estado %>
+                              <%= link_to estudiante_path(estudiante), 
+                                  method: :delete, 
+                                  class: "btn btn-sm btn-outline-danger", 
+                                  title: "Desactivar",
+                                  data: { 
+                                    toggle: 'tooltip',
+                                    confirm: '¿Está seguro que desea desactivar este estudiante?' 
+                                  } do %>
+                                <i class="fas fa-user-times"></i>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="fas fa-user-graduate fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">No se encontraron estudiantes</h5>
+              <p class="text-muted">No hay estudiantes registrados o ninguno coincide con los filtros aplicados.</p>
+              <% if current_user&.rol&.descripcion == 'Administrador' %>
+                <%= link_to 'Agregar Primer Estudiante', new_estudiante_path, class: "btn btn-primary" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card bg-primary text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h4 class="mb-0"><%= @estudiantes.count %></h4>
+                  <p class="mb-0">Total Estudiantes</p>
+                </div>
+                <div class="align-self-center">
+                  <i class="fas fa-users fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-success text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h4 class="mb-0"><%= @estudiantes.where(estado: true).count %></h4>
+                  <p class="mb-0">Estudiantes Activos</p>
+                </div>
+                <div class="align-self-center">
+                  <i class="fas fa-user-check fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-danger text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h4 class="mb-0"><%= @estudiantes.where(estado: false).count %></h4>
+                  <p class="mb-0">Estudiantes Inactivos</p>
+                </div>
+                <div class="align-self-center">
+                  <i class="fas fa-user-times fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-<% end %>
-<% if current_user.rol.descripcion=='Administrador'%>
-<%= link_to 'Agregar Estudiante', new_estudiante_path, :class => "btn btn-info" %>
-<%end%>
-<script src="https://www.w3schools.com/lib/w3.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
+</div>
 
-<input type="text" id="myInput" onkeyup="buscar()" placeholder="Buscar por nombres...",>
-
-<table id="myTable" class='table'>
-  <thead class="thead-dark">
-  <tr>
-    <!--When a header is clicked, run the sortTable function, with a parameter, 0 for sorting by names, 1 for sorting by country:-->
-    <th onclick="sortTable(0)"> Nombre Estudiante </th>
-    <th onclick="sortTable(1)"> Carrera </th>
-    <th onclick="sortTable(2)"> Estado </th>
-    <th> Opciones </th>
-  </tr>
-  </tr>
-  <% @estudiantes.each do |t| %>
-    <tr>
-      <td><%= t.nombreestudiante %> <%= t.apellidopa %> <%= t.apellidoma %></td>
-      <td><%= t.carrera.nombrecarrera %></td>
-
-      <td class="text-success">
-      <%if t.estado ==true %>
-      Activo 
-      <%else%> 
-      <p class="text-danger"> Inactivo</p>
-      <%end%>
-
-      <td>
-
-
-        <%= link_to 'Mostrar', estudiante_url(t), class:"btn btn-outline-success  btn-sm" %>
-        <% if current_user.rol.descripcion=='Administrador' %>
-        <%= link_to 'Editar', edit_estudiante_url(t), class:"btn btn-outline-warning  btn-sm" %> 
-        <% unless t.estado.nil? %>
-          <% if t.estado == true %>
-
-            <%= link_to 'Cambiar estado', edit_estudiante_url(t), class: "btn btn-danger btn-sm",
-                        method: :delete, data: {confirm: '¿Estas seguro?'} %>
-          <% end %>
-          <%end%>
-          <% end %>
-      </td>
-    </tr>
-  <%end%>
-  </table>
 <script>
-    function sortTable(n) {
-        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.getElementById("myTable");
+// Estudiantes table functionality
+$(document).ready(function() {
+  // Initialize tooltips and other Bootstrap components
+  $('[data-toggle="tooltip"]').tooltip();
+  
+  // RUT validation on input
+  $('#estudiante_rut').on('input', function() {
+    var rut = $(this).val();
+    if (validateRut(rut)) {
+      $(this).removeClass('is-invalid').addClass('is-valid');
+      $(this).siblings('.invalid-feedback').text('');
+    } else if (rut.length > 0) {
+      $(this).removeClass('is-valid').addClass('is-invalid');
+      $(this).siblings('.invalid-feedback').text('RUT inválido. Formato: XX.XXX.XXX-X');
+    }
+  });
+  
+  // Phone number validation
+  $('#estudiante_telefono').on('input', function() {
+    var phone = $(this).val();
+    if (validatePhone(phone)) {
+      $(this).removeClass('is-invalid').addClass('is-valid');
+      $(this).siblings('.invalid-feedback').text('');
+    } else if (phone.length > 0) {
+      $(this).removeClass('is-valid').addClass('is-invalid');
+      $(this).siblings('.invalid-feedback').text('Teléfono debe tener 9 dígitos');
+    }
+  });
+  
+  // NEM validation
+  $('#estudiante_nem').on('input', function() {
+    var nem = $(this).val();
+    if (validateNem(nem)) {
+      $(this).removeClass('is-invalid').addClass('is-valid');
+      $(this).siblings('.invalid-feedback').text('');
+    } else if (nem.length > 0) {
+      $(this).removeClass('is-valid').addClass('is-invalid');
+      $(this).siblings('.invalid-feedback').text('NEM debe estar entre 1.0 y 7.0');
+    }
+  });
+});
+
+// RUT validation function
+function validateRut(rut) {
+  if (!rut || rut.length < 2) return false;
+  
+  // Remove dots and hyphen
+  rut = rut.replace(/\./g, '').replace(/-/g, '');
+  
+  // Basic format check
+  if (rut.length < 8 || rut.length > 9) return false;
+  
+  var dv = rut.slice(-1).toUpperCase();
+  var rutNum = rut.slice(0, -1);
+  
+  // Check if rutNum is numeric
+  if (!/^\d+$/.test(rutNum)) return false;
+  
+  // Calculate expected DV
+  var sum = 0;
+  var mul = 2;
+  
+  for (var i = rutNum.length - 1; i >= 0; i--) {
+    sum += parseInt(rutNum.charAt(i)) * mul;
+    if (mul === 7) mul = 2;
+    else mul++;
+  }
+  
+  var expectedDv = 11 - (sum % 11);
+  if (expectedDv === 11) expectedDv = '0';
+  else if (expectedDv === 10) expectedDv = 'K';
+  else expectedDv = expectedDv.toString();
+  
+  return dv === expectedDv;
+}
+
+// Phone validation function
+function validatePhone(phone) {
+  if (!phone) return true; // Optional field
+  phone = phone.replace(/\D/g, '');
+  return phone.length === 9 && phone.startsWith('9');
+}
+
+// NEM validation function
+function validateNem(nem) {
+  if (!nem) return true; // Optional field
+  var nemFloat = parseFloat(nem.replace(',', '.'));
+  return !isNaN(nemFloat) && nemFloat >= 1.0 && nemFloat <= 7.0;
+}
+
+// Format RUT while typing
+function formatRut(input) {
+  var rut = input.value.replace(/\./g, '').replace(/-/g, '');
+  if (rut.length > 1) {
+    var dv = rut.slice(-1);
+    var rutNum = rut.slice(0, -1);
+    var formatted = '';
+    
+    // Add dots
+    for (var i = rutNum.length - 1, j = 0; i >= 0; i--, j++) {
+      formatted = rutNum.charAt(i) + formatted;
+      if (j === 2 && i !== 0) {
+        formatted = '.' + formatted;
+        j = -1;
+      }
+    }
+    
+    input.value = formatted + '-' + dv;
+  } else {
+    input.value = rut;
+  }
+}
+
+function sortTable(columnIndex) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+  
+  // Set the sorting direction to ascending:
+  dir = "asc";
+  
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // start by saying there should be no switching:
+      shouldSwitch = false;
+      
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[columnIndex];
+      y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+      
+      /* check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount++;
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
         switching = true;
-        //Set the sorting direction to ascending:
-        dir = "asc";
-        /*Make a loop that will continue until
-        no switching has been done:*/
-        while (switching) {
-            //start by saying: no switching is done:
-            switching = false;
-            rows = table.rows;
-            /*Loop through all table rows (except the
-            first, which contains table headers):*/
-            for (i = 1; i < (rows.length - 1); i++) {
-                //start by saying there should be no switching:
-                shouldSwitch = false;
-                /*Get the two elements you want to compare,
-                one from current row and one from the next:*/
-                x = rows[i].getElementsByTagName("TD")[n];
-                y = rows[i + 1].getElementsByTagName("TD")[n];
-                /*check if the two rows should switch place,
-                based on the direction, asc or desc:*/
-                if (dir == "asc") {
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                        //if so, mark as a switch and break the loop:
-                        shouldSwitch= true;
-                        break;
-                    }
-                } else if (dir == "desc") {
-                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                        //if so, mark as a switch and break the loop:
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
-            }
-            if (shouldSwitch) {
-                /*If a switch has been marked, make the switch
-                and mark that a switch has been done:*/
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-                //Each time a switch is done, increase this count by 1:
-                switchcount ++;
-            } else {
-                /*If no switching has been done AND the direction is "asc",
-                set the direction to "desc" and run the while loop again.*/
-                if (switchcount == 0 && dir == "asc") {
-                    dir = "desc";
-                    switching = true;
-                }
-            }
-        }
+      }
     }
+  }
+}
 
-    function buscar() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
+function filterEstudiantes() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
 
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0]; // Search only in the name column
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
     }
+  }
+}
 
+// Additional filtering function for status
+function filterByStatus(status) {
+  var table, tr, td, i;
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  for (i = 1; i < tr.length; i++) {
+    var statusCell = tr[i].getElementsByTagName("td")[2];
+    if (statusCell) {
+      var statusText = statusCell.textContent || statusCell.innerText;
+      var isActive = statusText.includes("Activo");
+      
+      if (status === 'all') {
+        tr[i].style.display = "";
+      } else if (status === 'active' && isActive) {
+        tr[i].style.display = "";
+      } else if (status === 'inactive' && !isActive) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
 </script>
 
