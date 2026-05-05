@@ -1,0 +1,25 @@
+<tr>
+  <td><%= carrera.nombrecarrera %></td>
+  <td><%= carrera.codigo %></td>
+  <td>
+    <span class="badge <%= carrera.estado ? 'badge-success' : 'badge-secondary' %>">
+      <%= carrera.estado ? 'Activo' : 'Inactivo' %>
+    </span>
+  </td>
+  <td>
+    <div class="btn-group" role="group">
+      <%= link_to 'Mostrar', carrera_path(carrera), 
+          class: "btn btn-outline-success btn-sm" %>
+      
+      <%= link_to 'Editar', edit_carrera_path(carrera), 
+          class: "btn btn-outline-warning btn-sm" %>
+      
+      <% if carrera.estado %>
+        <%= link_to 'Desactivar', carrera_path(carrera), 
+            method: :delete, 
+            data: { confirm: '¿Está seguro de desactivar esta carrera?' }, 
+            class: "btn btn-danger btn-sm" %>
+      <% end %>
+    </div>
+  </td>
+</tr>

@@ -1,11 +1,67 @@
-<h1 class= "text-info"><u> Datos Carrera </u> </h1> 
-<br>
-
-
-<p>Nombre: <%= @carrera.nombrecarrera %></p>
-<p>Codigo: <%= @carrera.codigo  %> </p>
-<p>Facultad: <%= @carrera.facultad.nombrefacultad %></p>
-<p>Fecha de Creacion : <%= @carrera.created_at %></p>
-<p>Fecha de Modificacion: <%= @carrera.updated_at %></p>
-
-<%= link_to '<== Volver', carreras_path, :class => "btn btn-info btn-lg" %></h3> 
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h3 class="mb-0">Detalles de la Carrera</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Nombre de la Carrera:</label>
+                <p class="form-control-plaintext"><%= @carrera.nombrecarrera %></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Código:</label>
+                <p class="form-control-plaintext"><%= @carrera.codigo %></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Facultad:</label>
+                <p class="form-control-plaintext">
+                  <%= @carrera.facultad&.nombrefacultad || 'No asignada' %>
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Estado:</label>
+                <p class="form-control-plaintext">
+                  <span class="badge <%= @carrera.estado ? 'badge-success' : 'badge-secondary' %>">
+                    <%= @carrera.estado ? 'Activo' : 'Inactivo' %>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Fecha de Creación:</label>
+                <p class="form-control-plaintext"><%= l(@carrera.created_at, format: :long) if @carrera.created_at %></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="font-weight-bold">Última Actualización:</label>
+                <p class="form-control-plaintext"><%= l(@carrera.updated_at, format: :long) if @carrera.updated_at %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <%= link_to 'Volver', carreras_path, class: "btn btn-secondary" %>
+          <%= link_to 'Editar', edit_carrera_path(@carrera), class: "btn btn-warning ml-2" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

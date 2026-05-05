@@ -1,35 +1,14 @@
-<%= form_for(@carrera, :html => {:role => 'form'}) do |f| %>
-  
-  <div class="form">
-    <h1 class="text-center"> Actualizacion de Carrera</h1>
-    
-    <div class="row">
-  
-    <div class="col">
-    <div class="field">
-      <%= f.label :nombrecarrera %><br/>
-      <%= f.text_field :nombrecarrera, autofocus: true, class: "form-control", placeholder: "Nombre" %>
-    </div><br>
-  </div>
-  <div class="col">
-  <div class="field">
-    <%= f.label :Codigo %><br/>
-    <%= f.text_field :codigo, autofocus: true, class: "form-control", placeholder: "Codigo" %>
-  </div><br>
-</div>
-  
-  <div class="col">
-  
-   <div class="field">
-      <%= f.label "Estado" %> <br />
-      <%= f.check_box :estado %> <br />
-  </div>
-  </div>
-  
-   </div>
-    <div class="actions">
-      <%= f.submit "Guardar Cambios" ,class:"btn btn-info"%><br><br>
-      <%= link_to '<== Volver', carreras_path, :class => "btn btn-info" %></h3> 
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">Editar Carrera</h3>
+        </div>
+        <div class="card-body">
+          <%= render 'form', carrera: @carrera, submit_text: 'Actualizar Carrera' %>
+        </div>
+      </div>
     </div>
-  <% end %>
   </div>
+</div>

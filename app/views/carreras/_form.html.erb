@@ -1,0 +1,73 @@
+<%= form_with(model: carrera, local: true, html: { class: "form-horizontal", role: "form" }) do |form| %>
+  <% if carrera.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h4><%= pluralize(carrera.errors.count, "error") %> impidieron guardar esta carrera:</h4>
+      <ul>
+        <% carrera.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group row">
+    <%= form.label :nombrecarrera, "Nombre de la Carrera", class: "col-md-3 col-form-label text-md-right" %>
+    <div class="col-md-6">
+      <%= form.text_field :nombrecarrera, 
+          class: "form-control #{'is-invalid' if carrera.errors[:nombrecarrera].any?}", 
+          placeholder: "Ingrese el nombre de la carrera",
+          autofocus: true %>
+      <% if carrera.errors[:nombrecarrera].any? %>
+        <div class="invalid-feedback">
+          <%= carrera.errors[:nombrecarrera].first %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= form.label :codigo, "Código", class: "col-md-3 col-form-label text-md-right" %>
+    <div class="col-md-6">
+      <%= form.text_field :codigo, 
+          class: "form-control #{'is-invalid' if carrera.errors[:codigo].any?}", 
+          placeholder: "Ingrese el código (5 dígitos)",
+          maxlength: 5 %>
+      <% if carrera.errors[:codigo].any? %>
+        <div class="invalid-feedback">
+          <%= carrera.errors[:codigo].first %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= form.label :facultad_id, "Facultad", class: "col-md-3 col-form-label text-md-right" %>
+    <div class="col-md-6">
+      <%= form.collection_select :facultad_id, @facultades, :id, :nombrefacultad, 
+          { prompt: "Seleccione una facultad" }, 
+          { class: "form-control #{'is-invalid' if carrera.errors[:facultad_id].any?}" } %>
+      <% if carrera.errors[:facultad_id].any? %>
+        <div class="invalid-feedback">
+          <%= carrera.errors[:facultad_id].first %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= form.label :estado, "Estado", class: "col-md-3 col-form-label text-md-right" %>
+    <div class="col-md-6">
+      <div class="form-check">
+        <%= form.check_box :estado, class: "form-check-input" %>
+        <%= form.label :estado, "Activo", class: "form-check-label" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-md-9 offset-md-3">
+      <%= form.submit submit_text, class: "btn btn-primary" %>
+      <%= link_to "Cancelar", carreras_path, class: "btn btn-secondary ml-2" %>
+    </div>
+  </div>
+<% end %>
