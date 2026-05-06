@@ -1,29 +1,61 @@
-<%= form_for(@facultad, :html => {:role => 'form'}) do |f| %>
-  
-  <div class="form">
-    <h1 class="text-center"> Actualizacion de Facultad</h1>
-  
-    <div class="row">
-  
-    <div class="col">
-    <div class="field">
-      <%= f.label :nombrefacultad %><br/>
-      <%= f.text_field :nombrefacultad, autofocus: true, class: "form-control", placeholder: "Nombre" %>
-    </div><br>
-  </div>
-  
-  
-  <div class="col">
-  
-   <div class="field">
-      <%= f.label "Estado" %> <br />
-      <%= f.check_box :estado %> <br />
-  </div>
-  </div>
-  
-   </div>
-    <div class="actions">
-      <%= f.submit "Guardar Facultad" ,class:"btn btn-success"%>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Editar Facultad</h1>
+  <%= link_to '← Volver', @facultad, class: "btn btn-secondary" %>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Actualizar Información</h5>
+      </div>
+      <div class="card-body">
+        <%= form_with(model: @facultad, local: true, html: { class: 'needs-validation', novalidate: true }) do |f| %>
+          <% if @facultad.errors.any? %>
+            <div class="alert alert-danger">
+              <h6 class="alert-heading">
+                <%= pluralize(@facultad.errors.count, "error") %> impidieron actualizar la facultad:
+              </h6>
+              <ul class="mb-0">
+                <% @facultad.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= f.label :nombrefacultad, 'Nombre de la Facultad', class: 'form-label' %>
+            <%= f.text_field :nombrefacultad, 
+                class: "form-control #{'is-invalid' if @facultad.errors[:nombrefacultad].any?}", 
+                placeholder: 'Ingrese el nombre de la facultad',
+                required: true,
+                minlength: 3,
+                maxlength: 50,
+                autofocus: true %>
+            <% if @facultad.errors[:nombrefacultad].any? %>
+              <div class="invalid-feedback">
+                <%= @facultad.errors[:nombrefacultad].first %>
+              </div>
+            <% else %>
+              <div class="form-text">El nombre debe tener entre 3 y 50 caracteres.</div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <div class="form-check">
+              <%= f.check_box :estado, class: 'form-check-input' %>
+              <%= f.label :estado, 'Activo', class: 'form-check-label' %>
+            </div>
+            <div class="form-text">Las facultades activas estarán disponibles en el sistema.</div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to 'Cancelar', @facultad, class: "btn btn-secondary" %>
+            <%= f.submit 'Actualizar Facultad', class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  <% end %>
   </div>
+</div>

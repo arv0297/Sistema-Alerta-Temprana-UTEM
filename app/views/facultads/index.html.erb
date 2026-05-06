@@ -1,61 +1,76 @@
 
 
-<h1> Facultades </h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Facultades</h1>
+  <%= link_to 'Nueva Facultad', new_facultad_path, class: "btn btn-primary" %>
+</div>
 
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar facultades..." onkeyup="buscar()">
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table id="myTable" class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th style="cursor: pointer;" onclick="sortTable(0)">
+              Nombre <i class="fas fa-sort"></i>
+            </th>
+            <th style="cursor: pointer;" onclick="sortTable(1)">
+              Estado <i class="fas fa-sort"></i>
+            </th>
+            <th style="cursor: pointer;" onclick="sortTable(2)">
+              Fecha de Creación <i class="fas fa-sort"></i>
+            </th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @facultades.each do |facultad| %>
+            <tr>
+              <td><strong><%= facultad.nombrefacultad %></strong></td>
+              <td>
+                <% if facultad.estado %>
+                  <span class="badge bg-success">Activo</span>
+                <% else %>
+                  <span class="badge bg-secondary">Inactivo</span>
+                <% end %>
+              </td>
+              <td><%= l(facultad.created_at, format: :short) if facultad.created_at %></td>
+              <td class="text-center">
+                <div class="btn-group" role="group">
+                  <%= link_to 'Ver', facultad_path(facultad), class: "btn btn-outline-primary btn-sm" %>
+                  <%= link_to 'Editar', edit_facultad_path(facultad), class: "btn btn-outline-warning btn-sm" %>
+                  <% if facultad.estado %>
+                    <%= link_to 'Desactivar', facultad_path(facultad), 
+                        method: :delete, 
+                        class: "btn btn-outline-danger btn-sm",
+                        data: { confirm: '¿Está seguro que desea desactivar esta facultad?' } %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-
-<%= link_to 'Agregar Facultad', new_facultad_path, :class => "btn btn-info " %>
-
-<script src="https://www.w3schools.com/lib/w3.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" />
-
-<input type="text" id="myInput" onkeyup="buscar()" placeholder="Buscar por nombres...",> 
-
-<table id="myTable" class='table'>
-  <thead class="thead-dark">
-  <tr>
-   <!--When a header is clicked, run the sortTable function, with a parameter, 0 for sorting by names, 1 for sorting by country:-->  
-    <th onclick="sortTable(0)">Nombre</th>
-    <th onclick="sortTable(1)">Estado</th>
-    <th onclick="sortTable(2)">Fecha</th>
-    <th> Opciones </th>
-  </tr>
-  </tr>
-    <% @facultades.each do |t| %>
-  <tr>
-    <td><%= t.nombrefacultad %></td>
-    <td class="text-success">
-      <%if t.estado ==true %>
-      Activo 
-     <%else%> 
-      Inactivo
-    <%end%>
-     </td>    
-    <td><%= t.created_at %></td>
-<td>
-
-
-    <%= link_to 'Mostrar', facultad_url(t), class:"btn btn-outline-success  btn-sm" %>
-   
-     
-     
-    <%= link_to 'Editar', edit_facultad_url(t), class:"btn btn-outline-warning  btn-sm" %>
-
-
-
-
-    <% unless t.estado.nil? %>
-    <% if t.estado == true %>
-        
-      <%= link_to 'Cambiar estado', edit_facultad_url(t), class: "btn btn-danger btn-sm",
-                          method: :delete, data: {confirm: '¿Estas seguro?'} %>
-      <% end %>
-      <% end %>
-      </td>
-      </tr>
-  <% end %>
-</table>
+<% if @facultades.empty? %>
+  <div class="text-center py-5">
+    <i class="fas fa-university fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No hay facultades registradas</h5>
+    <p class="text-muted">Comience agregando una nueva facultad al sistema.</p>
+    <%= link_to 'Nueva Facultad', new_facultad_path, class: "btn btn-primary" %>
+  </div>
+<% end %>
 
 <script>
 function sortTable(n) {
@@ -114,25 +129,25 @@ function sortTable(n) {
 }
 
 function buscar() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
     }
-  }
 }
 
 </script>

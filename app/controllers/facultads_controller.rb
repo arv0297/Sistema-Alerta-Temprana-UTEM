@@ -1,59 +1,75 @@
 class FacultadsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_facultad, only: [:show,:delete,:edit,:update]
-
   layout "prueba"
+  before_action :authenticate_user!
+  before_action :set_facultad, only: [:show, :edit, :update, :destroy]
+
+  # GET /facultads
   def index
-    @facultades=Facultad.all
-    @facultads= Facultad.new
+    @facultades = Facultad.all.order(:nombrefacultad)
+    @facultad = Facultad.new
   end
 
+  # GET /facultads/1
   def show
-    @facultad= Facultad.find(params[:id])
-  end 
-  
-  def delete
-    #@user.destroy
-    
-    @facultad.estado = false
-    @facultad.save
-      redirect_to facultads_path, success: "Facultad no existente"
-  end
-  
-  def update
-      if @facultad.update(facultad_params)
-        redirect_to facultad_path, success: "Se Actualizaron los datos"
-      else
-        render :edit , danger: "Modifique por valores válidos"
-      end
+    # @facultad is set by before_action
   end
 
-  def edit
-  end
-   
-
+  # GET /facultads/new
   def new
-   @facultads= Facultad.new
+    @facultad = Facultad.new
   end
 
+  # GET /facultads/1/edit
+  def edit
+    # @facultad is set by before_action
+  end
+
+  # POST /facultads
   def create
-    @facultad= Facultad.new(facultad_params)
-    if @facultad.save
-      redirect_to facultads_path, success: "Se creo correctamente"
-    else
-    render 'new' ,danger:"Ingrese datos Validos"
+    @facultad = Facultad.new(facultad_params)
+
+    respond_to do |format|
+      if @facultad.save
+        format.html { redirect_to facultads_path, success: 'Facultad creada exitosamente.' }
+        format.json { render :show, status: :created, location: @facultad }
+      else
+        format.html { render :new }
+        format.json { render json: @facultad.errors, status: :unprocessable_entity }
+      end
     end
   end
-  
+
+  # PATCH/PUT /facultads/1
+  def update
+    respond_to do |format|
+      if @facultad.update(facultad_params)
+        format.html { redirect_to @facultad, success: 'Facultad actualizada exitosamente.' }
+        format.json { render :show, status: :ok, location: @facultad }
+      else
+        format.html { render :edit }
+        format.json { render json: @facultad.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /facultads/1
+  def destroy
+    if @facultad.update(estado: false)
+      redirect_to facultads_path, success: 'Facultad desactivada exitosamente.'
+    else
+      redirect_to facultads_path, danger: 'No se pudo desactivar la facultad.'
+    end
+  end
 
   private
-    def facultad_params
-      params.require(:facultad).permit(:nombrefacultad, :estado)
-    end
 
-    def set_facultad
-      @facultad = Facultad.find(params[:id])
-    end
-
-
+  def set_facultad
+    @facultad = Facultad.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to facultads_path, danger: 'Facultad no encontrada.'
   end
+
+  def facultad_params
+    params.require(:facultad).permit(:nombrefacultad, :estado)
+  end
+end

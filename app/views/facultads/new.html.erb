@@ -1,16 +1,63 @@
- <h3 class="text-uppercase">Crear Facultad  <%= link_to '<= Volver', facultads_path, :class => "btn btn-info-3 btn-sm" %></h3></h1>
+ <div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Nueva Facultad</h1>
+  <%= link_to '← Volver', facultads_path, class: "btn btn-secondary" %>
+</div>
 
-<%=form_for(@facultads) do |f| %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Información de la Facultad</h5>
+      </div>
+      <div class="card-body">
+        <%= form_with(model: @facultad, local: true, html: { class: 'needs-validation', novalidate: true }) do |f| %>
+          <% if @facultad.errors.any? %>
+            <div class="alert alert-danger">
+              <h6 class="alert-heading">
+                <%= pluralize(@facultad.errors.count, "error") %> impidieron guardar la facultad:
+              </h6>
+              <ul class="mb-0">
+                <% @facultad.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
 
-  <div class="form-group">
-    <label for="formGroupExampleInput"></label>
-    <%= f.text_field :nombrefacultad, placeholder:"Nombre Facultad" , class:"form-control"  %>
-    
+          <div class="mb-3">
+            <%= f.label :nombrefacultad, 'Nombre de la Facultad', class: 'form-label' %>
+            <%= f.text_field :nombrefacultad, 
+                class: "form-control #{'is-invalid' if @facultad.errors[:nombrefacultad].any?}", 
+                placeholder: 'Ingrese el nombre de la facultad',
+                required: true,
+                minlength: 3,
+                maxlength: 50 %>
+            <% if @facultad.errors[:nombrefacultad].any? %>
+              <div class="invalid-feedback">
+                <%= @facultad.errors[:nombrefacultad].first %>
+              </div>
+            <% else %>
+              <div class="form-text">El nombre debe tener entre 3 y 50 caracteres.</div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <div class="form-check">
+              <%= f.check_box :estado, class: 'form-check-input', checked: true %>
+              <%= f.label :estado, 'Activo', class: 'form-check-label' %>
+            </div>
+            <div class="form-text">Las facultades activas estarán disponibles en el sistema.</div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to 'Cancelar', facultads_path, class: "btn btn-secondary" %>
+            <%= f.submit 'Guardar Facultad', class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
-
-   <%= f.submit "Guardar" ,class:"btn btn-info" %> 
- 
-  <%end%>
+</div>
 
 
 
