@@ -1,57 +1,57 @@
-<h1>Alertas</h1>
-
-
-<Table class="table">
-  <tr>
-    <thead class="thead-dark">
-    <th>Nombre Estudiante</th>
-    <th>Profesional</th>
-    <th> Prioridad</th>
-	  <th> Fecha </th>
-    <th> Opciones </th>
-  </thead>
-  </tr>
-
-	<% @alertas.each do |t| %>
-
-    <% if t.prioridad=='Alta' %>
-  <tr>
-  <td class="bg-danger text-light"><%= t.informe.estudiante.nombreestudiante%> <%= t.informe.estudiante.apellidopa%> <%= t.informe.estudiante.apellidoma%></td>
-  <td class="bg-danger text-light"><%= t.informe.user.nombre%> <%= t.informe.user.apellidopa%> <%= t.informe.user.apellidoma%></td>
-  <td class="bg-danger text-light"><%= t.prioridad %></td>
-  <td class="bg-danger text-light"><%= t.created_at.strftime("%d-%m-%Y ") %></td>
-	<td class="bg-danger text-light">
-  <%= link_to 'Mostrar', alerta_url(t), class:"btn btn-success  btn-sm" %>
-  </td>
-  </tr>
-  <%end%>
-  
-  <% if t.prioridad=='Media' %>
-  <tr>
-  <td class="bg-warning text-dark"><%= t.informe.estudiante.nombreestudiante%> <%= t.informe.estudiante.apellidopa%> <%= t.informe.estudiante.apellidoma%></td>
-  <td class="bg-warning text-dark"><%= t.informe.user.nombre%> <%= t.informe.user.apellidopa%> <%= t.informe.user.apellidoma%></td>
-  <td class="bg-warning text-dark"><%= t.prioridad %></td>
-  <td class="bg-warning text-dark"><%= t.created_at.strftime("%d-%m-%Y") %></td>
-	<td class="bg-warning text-dark"> <%= link_to 'Mostrar', alerta_url(t), class:"btn btn-success  btn-sm" %>
-	</td>
-  </tr>
-  <%end%>
-
-  <% if t.prioridad=='Baja' %>
-  <tr>
-  <td class="bg-info text-dark"><%= t.informe.estudiante.nombreestudiante%> <%= t.informe.estudiante.apellidopa%> <%= t.informe.estudiante.apellidoma%></td>
-  <td class="bg-info text-dark"><%= t.informe.user.nombre%> <%= t.informe.user.apellidopa%> <%= t.informe.user.apellidoma%></td>
-  <td class="bg-info text-dark"><%= t.prioridad %></td>
-  <td class="bg-info text-dark"><%= t.created_at.strftime("%d-%m-%Y") %></td>
-	<td class="bg-info text-dark"> <%= link_to 'Mostrar', alerta_url(t), class:"btn btn-success  btn-sm" %>
-	</td>
-  </tr>
-  <%end%>
-
-
- 
-<%end%>
-
-</table>
+<div class="card">
+  <div class="card-header">
+    <h3 class="mb-0">Alertas Tempranas</h3>
+  </div>
+  <div class="card-body">
+    <% if @alertas.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Estudiante</th>
+              <th>Profesional</th>
+              <th>Prioridad</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @alertas.each do |alerta| %>
+              <tr class="<%= priority_badge_class(alerta.prioridad) %>">
+                <td class="font-weight-bold">
+                  <%= full_student_name(alerta.informe&.estudiante) %>
+                </td>
+                <td>
+                  <%= full_user_name(alerta.informe&.user) %>
+                </td>
+                <td>
+                  <span class="badge <%= priority_badge_class(alerta.prioridad) %>">
+                    <%= alerta.prioridad || 'N/A' %>
+                  </span>
+                </td>
+                <td>
+                  <%= format_date(alerta.created_at) %>
+                </td>
+                <td>
+                  <%= link_to alerta_path(alerta), 
+                              class: 'btn btn-primary btn-sm',
+                              title: 'Ver detalles' do %>
+                    <i class="fas fa-eye"></i> Ver
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-4">
+        <i class="fas fa-exclamation-triangle fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No hay alertas registradas</h5>
+        <p class="text-muted">No se encontraron alertas en el sistema.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 

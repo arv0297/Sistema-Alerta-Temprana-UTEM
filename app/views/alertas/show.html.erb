@@ -1,413 +1,68 @@
-<h3> Alerta Temprana </h3>
-<h5> Generada por : <%=@alerta.informe.user.nombre%> <%=@alerta.informe.user.apellidopa%>  , <%=@alerta.informe.user.rol.descripcion%></h5>
-<h5> Fecha : <%=@alerta.informe.created_at.strftime("%d-%m-%Y")%></h5>
-<h5> Informe N° : <%=@alerta.informe.id%></h5>
-<h5>Estudiante : <%= @alerta.informe.estudiante.nombreestudiante%> <%= @alerta.informe.estudiante.apellidopa%> <%= @alerta.informe.estudiante.apellidoma%></h5><br>
-<% if @alerta.informe.user.rol.descripcion=='Sicologo' %>
-    <h5> Calificaciones  </h5>
-    <%if (@alerta.informe.nota1<=3)||(@alerta.informe.nota2<=3)||(@alerta.informe.nota3<=3)||(@alerta.informe.nota4<=3)||(@alerta.informe.nota5<=3)||(@alerta.informe.promhabitos<=5)%>
-    <h5><li> Habitos de estudio </li></h5>
-   <%end%>
-    <%if (@alerta.informe.nota1<=3)%>
-     <p class="text-danger"> Si tiene problemas con materias, ¿que tan grave es? : <%=@alerta.informe.nota1%></p> 
-     <%else%>
-     <p> Si tiene problemas con materias, ¿que tan grave es? : <%=@alerta.informe.nota1%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota2<=3)%>
-     <p class="text-danger"> ¿Cómo considera que es la comprensión de los contenidos que estudia? : <%=@alerta.informe.nota2%></p> 
-     <%else%>
-     <p> ¿Cómo considera que es la comprensión de los contenidos que estudia? : <%=@alerta.informe.nota2%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota3<=3)%>
-     <p class="text-danger"> ¿En relación al espacio físico de su lugar de estudio, ¿cómo lo califica? : <%=@alerta.informe.nota3%></p> 
-     <%else%>
-     <p> ¿En relación al espacio físico de su lugar de estudio, ¿cómo lo califica? : <%=@alerta.informe.nota3%></p> 
-     <%end%>
-     
-    <%if (@alerta.informe.nota4<=3)%>
-     <p class="text-danger"> ¿Cómo es el tiempo que dedica a estudiar? : <%=@alerta.informe.nota4%></p> 
-     <%else%>
-     <p> ¿Cómo es el tiempo que dedica a estudiar? : <%=@alerta.informe.nota4%></p> 
-     <%end%>
+<div class="card">
+  <div class="card-header bg-dark text-white">
+    <h3 class="mb-0">Alerta Temprana</h3>
+  </div>
+  <div class="card-body">
+    <!-- Alert Header Information -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="alert-info">
+          <h5 class="text-primary">Información General</h5>
+          <p><strong>Generada por:</strong> <%= full_user_name(@informe.user) %>, <%= @informe.user.rol&.descripcion %></p>
+          <p><strong>Fecha:</strong> <%= format_date(@informe.created_at) %></p>
+          <p><strong>Informe N°:</strong> <%= @informe.id %></p>
+          <p><strong>Estudiante:</strong> <span class="font-weight-bold text-primary"><%= full_student_name(@informe.estudiante) %></span></p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="alert-priority">
+          <h5 class="text-secondary">Prioridad de Alerta</h5>
+          <span class="badge <%= priority_badge_class(@alerta.prioridad) %> p-3" style="font-size: 1.2rem;">
+            <%= @alerta.prioridad || 'N/A' %>
+          </span>
+        </div>
+      </div>
+    </div>
 
-    <%if (@alerta.informe.nota5<=3)%>
-    <p class="text-danger"> ¿Cómo estima que son sus calificaciones en función de su estudio y esfuerzo? : <%=@alerta.informe.nota5%></p> 
-    <%else%>
-    <p> ¿Cómo estima que son sus calificaciones en función de su estudio y esfuerzo? : <%=@alerta.informe.nota5%></p>
-    <%end%>
-     <% if @alerta.informe.promhabitos<5 %>
-    <p class="text-danger"> Promedio Hábitos de estudio : <%=@alerta.informe.promhabitos%></p> 
-     <%else%>
-     <p> Promedio Hábitos de estudio : <%=@alerta.informe.promhabitos%></p> 
-     <%end%>
+    <!-- Evaluation Sections -->
+    <%= render 'evaluation_section', 
+               evaluations: @evaluations[:habits], 
+               section_title: 'Hábitos de Estudio', 
+               section_icon: 'book' %>
 
+    <%= render 'evaluation_section', 
+               evaluations: @evaluations[:vocation], 
+               section_title: 'Vocación', 
+               section_icon: 'graduation-cap' %>
 
+    <%= render 'evaluation_section', 
+               evaluations: @evaluations[:health], 
+               section_title: 'Salud Física y Mental', 
+               section_icon: 'heart' %>
 
-    <%if (@alerta.informe.nota6<=3)||(@alerta.informe.nota7<=3)||(@alerta.informe.nota8<=3)||(@alerta.informe.nota9<=3)||(@alerta.informe.nota10<=3)||(@alerta.informe.vocacion<=5)%>
-    <h5><li> Vocación </li></h5>
-   <%end%>
-   
-    <%if (@alerta.informe.nota6<=3)%>
-    <p class="text-danger"> ¿Cómo considera que fue la elección que hizo de la carrera que cursa?: <%=@alerta.informe.nota6%></p> 
-    <%else%>
-    <p>¿Cómo considera que fue la elección que hizo de la carrera que cursa? : <%=@alerta.informe.nota6%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota7<=3)%>
-    <p class="text-danger"> Con respecto a su elección universitaria, ¿cómo la califica hoy? : <%=@alerta.informe.nota7%></p> 
-    <%else%>
-    <p> Con respecto a su elección universitaria, ¿cómo la califica hoy? : <%=@alerta.informe.nota7%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota8<=3)%>
-    <p class="text-danger"> ¿Cómo  piensa que son los contenidos de las materias que imparte su carrera? : <%=@alerta.informe.nota8%></p> 
-    <%else%>
-    <p> ¿Cómo  piensa que son los contenidos de las materias que imparte su carrera? : <%=@alerta.informe.nota8%></p> 
-    <%end%>
-    
-   <%if (@alerta.informe.nota9<=3)%>
-    <p class="text-danger">¿Qué tan drásticos cree que  han sido los cambios a lo largo del tiempo en relación a su vocación? : <%=@alerta.informe.nota9%></p> 
-    <%else%>
-    <p> ¿Qué tan drásticos cree que  han sido los cambios a lo largo del tiempo en relación a su vocación?: <%=@alerta.informe.nota9%></p> 
-    <%end%>
+    <!-- Additional Observations for Jefe de Carrera -->
+    <% if @informe.user&.rol&.descripcion == 'Jefe de Carrera' && @informe.observacion.present? %>
+      <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">
+            <i class="fas fa-comment-alt"></i>
+            Observaciones del Jefe de Carrera
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-danger">
+            <%= simple_format(@informe.observacion) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
 
-   <%if (@alerta.informe.nota10<=3)%>
-   <p class="text-danger"> ¿Cómo considera su nivel de vocación de elección universitaria antes de ingresar a la educación superior? : <%=@alerta.informe.nota10%></p> 
-   <%else%>
-   <p> ¿Cómo considera su nivel de vocación de elección universitaria antes de ingresar a la educación superior? : <%=@alerta.informe.nota10%></p>
-   <%end%>
-    
-   
-   <% if @alerta.informe.promvocacion<5 %>
-   <p class="text-danger"> Promedio Vocación : <%=@alerta.informe.promvocacion%></p> 
-    <%else%>
-    <p> Promedio Vocación : <%=@alerta.informe.promvocacion%></p>  
-    <%end%>
-
-
-
-
-
-
-   <%if (@alerta.informe.nota11<=3)||(@alerta.informe.nota12<=3)||(@alerta.informe.nota13<=3)||(@alerta.informe.nota14<=3)||(@alerta.informe.nota15<=3)||(@alerta.informe.promsalud<=5)%>
-   <h5><li> Salud Fisica y Mental</li></h5>
-  <%end%>
-  
-   <%if (@alerta.informe.nota11<=3)%>
-   <p class="text-danger"> ¿Cómo considera que fue la elección que hizo de la carrera que cursa?: <%=@alerta.informe.nota11%></p> 
-   <%else%>
-   <p>¿Cómo considera que fue la elección que hizo de la carrera que cursa? : <%=@alerta.informe.nota11%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota12<=3)%>
-   <p class="text-danger"> Con respecto a su elección universitaria, ¿cómo la califica hoy? : <%=@alerta.informe.nota12%></p> 
-   <%else%>
-   <p> Con respecto a su elección universitaria, ¿cómo la califica hoy? : <%=@alerta.informe.nota12%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota13<=3)%>
-   <p class="text-danger"> ¿Cómo  piensa que son los contenidos de las materias que imparte su carrera? : <%=@alerta.informe.nota13%></p> 
-   <%else%>
-   <p> ¿Cómo  piensa que son los contenidos de las materias que imparte su carrera? : <%=@alerta.informe.nota13%></p> 
-   <%end%>
-   
-  <%if (@alerta.informe.nota14<=3)%>
-   <p class="text-danger">¿Qué tan drásticos cree que  han sido los cambios a lo largo del tiempo en relación a su vocación? : <%=@alerta.informe.nota14%></p> 
-   <%else%>
-   <p> ¿Qué tan drásticos cree que  han sido los cambios a lo largo del tiempo en relación a su vocación?: <%=@alerta.informe.nota14%></p> 
-   <%end%>
-
-  <%if (@alerta.informe.nota15<=3)%>
-  <p class="text-danger"> ¿Cómo considera su nivel de vocación de elección universitaria antes de ingresar a la educación superior comparada con hoy? : <%=@alerta.informe.nota15%></p> 
-  <%else%>
-  <p> ¿Cómo considera su nivel de vocación de elección universitaria antes de ingresar a la educación superior comparada con hoy? : <%=@alerta.informe.nota15%></p>
-  <%end%>
-   
-  <% if @alerta.informe.promsalud<5 %>
-    <p class="text-danger"> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>   
-    <%else%>
-    <p> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>  
-    <%end%>
- 
-<%end%>
-
-
-
-
-
-
-
-
-
-<% if @alerta.informe.user.rol.descripcion=='Asistente Social' %>
-    <h5> Calificaciones  </h5>
-    <%if (@alerta.informe.nota1<=3)||(@alerta.informe.nota2<=3)||(@alerta.informe.nota3<=3)||(@alerta.informe.nota4<=3)||(@alerta.informe.nota5<=3)||(@alerta.informe.promhabitos<=5)%>
-    <h5><li> Habitos de estudio </li></h5>
-   <%end%>
-    <%if (@alerta.informe.nota1<=3)%>
-     <p class="text-danger"> Pensando en las últimas semanas, ¿cómo considera que es el tiempo que destinó para estudiar y preparar sus exámenes? : <%=@alerta.informe.nota1%></p> 
-     <%else%>
-     <p> Pensando en las últimas semanas, ¿cómo considera que es el tiempo que destinó para estudiar y preparar sus exámenes? : <%=@alerta.informe.nota1%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota2<=3)%>
-     <p class="text-danger"> ¿Cómo ha que sido el trabajo colaborativo con sus compañeros al momento de estudiar en los últimos días? : <%=@alerta.informe.nota2%></p> 
-     <%else%>
-     <p> ¿Cómo ha que sido el trabajo colaborativo con sus compañeros al momento de estudiar en los últimos días? : <%=@alerta.informe.nota2%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota3<=3)%>
-     <p class="text-danger"> ¿Cómo califica la atención- concentración al momento de estudiar? : <%=@alerta.informe.nota3%></p> 
-     <%else%>
-     <p> ¿Cómo califica la atención- concentración al momento de estudiar? : <%=@alerta.informe.nota3%></p> 
-     <%end%>
-     
-    <%if (@alerta.informe.nota4<=3)%>
-     <p class="text-danger"> En los últimos días, ¿estima que los problemas afectivos han perjudicado su rendimiento? : <%=@alerta.informe.nota4%></p> 
-     <%else%>
-     <p> En los últimos días, ¿estima que los problemas afectivos han perjudicado su rendimiento? : <%=@alerta.informe.nota4%></p> 
-     <%end%>
-
-    <%if (@alerta.informe.nota5<=3)%>
-    <p class="text-danger"> En el estudio de las últimas evaluaciones, ¿cómo consideras que ha trabajado con métodos de estudio?(mapas conceptuales, resumen, etc.) : <%=@alerta.informe.nota5%></p> 
-    <%else%>
-    <p> En el estudio de las últimas evaluaciones, ¿cómo consideras que ha trabajado con métodos de estudio?(mapas conceptuales, resumen, etc.) : <%=@alerta.informe.nota5%></p>
-    <%end%>
-     
-    <% if @alerta.informe.promhabitos<5 %>
-    <p class="text-danger"> Promedio Hábitos de estudio : <%=@alerta.informe.promhabitos%></p> 
-     <%else%>
-     <p> Promedio Hábitos de estudio : <%=@alerta.informe.promhabitos%></p> 
-     <%end%> 
-    
-
-
-
-
-
-    <%if (@alerta.informe.nota6<=3)||(@alerta.informe.nota7<=3)||(@alerta.informe.nota8<=3)||(@alerta.informe.nota9<=3)||(@alerta.informe.nota10<=3)||(@alerta.informe.vocacion<=5)%>
-    <h5><li> Vocación </li></h5>
-   <%end%>
-   
-    <%if (@alerta.informe.nota6<=3)%>
-    <p class="text-danger"> A partir de lo aprendido en el último tiempo, ¿cómo cree que es la relación entre su vocación y preparación? : <%=@alerta.informe.nota6%></p> 
-    <%else%>
-    <p>A partir de lo aprendido en el último tiempo, ¿cómo cree que es la relación entre su vocación y preparación? : <%=@alerta.informe.nota6%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota7<=3)%>
-    <p class="text-danger"> En los últimos días, ¿cómo se ha sentido con la decisión de estudiar la carrera que cursa? : <%=@alerta.informe.nota7%></p> 
-    <%else%>
-    <p> En los últimos días, ¿cómo se ha sentido con la decisión de estudiar la carrera que cursa? : <%=@alerta.informe.nota7%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota8<=3)%>
-    <p class="text-danger"> ¿Cómo considera la preparación de las clases de los docentes? : <%=@alerta.informe.nota8%></p> 
-    <%else%>
-    <p> ¿Cómo considera la preparación de las clases de los docentes? : <%=@alerta.informe.nota8%></p> 
-    <%end%>
-    
-   <%if (@alerta.informe.nota9<=3)%>
-    <p class="text-danger">¿Cómo estima que es la relación de sus notas versus su preparación en el último tiempo? : <%=@alerta.informe.nota9%></p> 
-    <%else%>
-    <p> ¿Cómo estima que es la relación de sus notas versus su preparación en el último tiempo? : <%=@alerta.informe.nota9%></p> 
-    <%end%>
-
-   <%if (@alerta.informe.nota10<=3)%>
-   <p class="text-danger">Pensando en las últimas semanas, ¿cómo ha sido el aporte social para el desarrollo vocacional? : <%=@alerta.informe.nota10%></p> 
-   <%else%>
-   <p> Pensando en las últimas semanas, ¿cómo ha sido el aporte social para el desarrollo vocacional? : <%=@alerta.informe.nota10%></p>
-   <%end%>
-    
-   <% if @alerta.informe.promvocacion<5 %>
-   <p class="text-danger"> Promedio Vocación : <%=@alerta.informe.promvocacion%></p> 
-    <%else%>
-    <p> Promedio Vocación : <%=@alerta.informe.promvocacion%></p>  
-    <%end%>
-
-
-
-
-
-
-
-   <%if (@alerta.informe.nota11<=3)||(@alerta.informe.nota12<=3)||(@alerta.informe.nota13<=3)||(@alerta.informe.nota14<=3)||(@alerta.informe.nota15<=3)||(@alerta.informe.promsalud<=5)%>
-   <h5><li> Salud Fisica y Mental</li></h5>
-  <%end%>
-  
-   <%if (@alerta.informe.nota11<=3)%>
-   <p class="text-danger"> En la Sala de clases, si tiene problemas de concentracion, que tan frecuentes son ? : <%=@alerta.informe.nota11%></p> 
-   <%else%>
-   <p>En la Sala de clases, si tiene problemas de concentracion, que tan frecuentes son ? : <%=@alerta.informe.nota11%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota12<=3)%>
-   <p class="text-danger"> ¿Siente malestar fisico o emocional al estar en la sala de clases con mas personas ? : <%=@alerta.informe.nota12%></p> 
-   <%else%>
-   <p> ¿Siente malestar fisico o emocional al estar en la sala de clases con mas personas ? : <%=@alerta.informe.nota12%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota13<=3)%>
-   <p class="text-danger"> ¿Ha dejado la actividad fisica o los estudios, solo por que no se siente bien emocionalmente ? : <%=@alerta.informe.nota13%></p> 
-   <%else%>
-   <p> ¿Ha dejado la actividad fisica o los estudios, solo por que no se siente bien emocionalmente ? : <%=@alerta.informe.nota13%></p> 
-   <%end%>
-   
-  <%if (@alerta.informe.nota14<=3)%>
-   <p class="text-danger">¿Si tiene alteraciones de sueño, que tan frecuentes son ? : <%=@alerta.informe.nota14%></p> 
-   <%else%>
-   <p> ¿Si tiene alteraciones de sueño, que tan frecuentes son ? : <%=@alerta.informe.nota14%></p> 
-   <%end%>
-
-  <%if (@alerta.informe.nota15<=3)%>
-  <p class="text-danger">¿Es capaz de expresar abiertamiente su opinion y compartir con compañeros ?  : <%=@alerta.informe.nota15%></p> 
-  <%else%>
-  <p> ¿Es capaz de expresar abiertamiente su opinion y compartir con compañeros ?  : <%=@alerta.informe.nota15%></p>
-  <%end%>
-   
-  <% if @alerta.informe.promsalud<5 %>
-  <p class="text-danger"> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>   
-  <%else%>
-  <p> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>  
-  <%end%>
-  <%end%>
-
-
-  <% if @alerta.informe.user.rol.descripcion=='Tutor' %>
-    <h5> Calificaciones  </h5>
-    <%if (@alerta.informe.nota1<=3)||(@alerta.informe.nota2<=3)||(@alerta.informe.nota3<=3)||(@alerta.informe.nota4<=3)||(@alerta.informe.nota5<=3)||(@alerta.informe.promhabitos<=5)%>
-    <h5><li> Habitos de estudio </li></h5>
-   <%end%>
-    <%if (@alerta.informe.nota1<=3)%>
-     <p class="text-danger"> Referente al tiempo que ha dedicado al estudio estos últimos días, ¿cómo considera que han sido los resultados académicos? : <%=@alerta.informe.nota1%></p> 
-     <%else%>
-     <p> Referente al tiempo que ha dedicado al estudio estos últimos días, ¿cómo considera que han sido los resultados académicos? : <%=@alerta.informe.nota1%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota2<=3)%>
-     <p class="text-danger"> En relación a la concentración cuando estudia, ¿qué nivel considera que logra alcanzar? : <%=@alerta.informe.nota2%></p> 
-     <%else%>
-     <p> En relación a la concentración cuando estudia, ¿qué nivel considera que logra alcanzar? : <%=@alerta.informe.nota2%></p>
-     <%end%>
-    
-    <%if (@alerta.informe.nota3<=3)%>
-     <p class="text-danger"> ¿Cómo considera que es su organización para estudiar y realizar trabajos? (horario de repaso, investigación, etc.) : <%=@alerta.informe.nota3%></p> 
-     <%else%>
-     <p>¿Cómo considera que es su organización para estudiar y realizar trabajos? (horario de repaso, investigación, etc.) : <%=@alerta.informe.nota3%></p> 
-     <%end%>
-     
-    <%if (@alerta.informe.nota4<=3)%>
-     <p class="text-danger"> ¿Cómo es el espacio que destina para poder estudiar y realizar trabajos? : <%=@alerta.informe.nota4%></p> 
-     <%else%>
-     <p> ¿Cómo es el espacio que destina para poder estudiar y realizar trabajos? : <%=@alerta.informe.nota4%></p> 
-     <%end%>
-
-    <%if (@alerta.informe.nota5<=3)%>
-    <p class="text-danger"> ¿Cómo considera que es su comprensión cuando estudia o realiza trabajos en horarios no adecuados? (día previo a una prueba o entrega de trabajos, en la madrugada, etc.) : <%=@alerta.informe.nota5%></p> 
-    <%else%>
-    <p> ¿Cómo considera que es su comprensión cuando estudia o realiza trabajos en horarios no adecuados? (día previo a una prueba o entrega de trabajos, en la madrugada, etc.) : <%=@alerta.informe.nota5%></p>
-    <%end%>
-     
-    <% if @alerta.informe.promhabitos<5 %>
-    <p class="text-danger"> Promedio Hábitos de estudio : <%=@alerta.informe.promhabitos%></p> 
-     <%else%>
-     <% if @alerta.informe.promvocacion<5 %>
-     <p class="text-danger"> Promedio Vocación : <%=@alerta.informe.promvocacion%></p> 
-      <%else%>
-      <p> Promedio Vocación : <%=@alerta.informe.promvocacion%></p>  
-      <%end%>
-    
-
-
-
-
-
-    <%if (@alerta.informe.nota6<=3)||(@alerta.informe.nota7<=3)||(@alerta.informe.nota8<=3)||(@alerta.informe.nota9<=3)||(@alerta.informe.nota10<=3)||(@alerta.informe.vocacion<=5)%>
-    <h5><li> Vocación </li></h5>
-   <%end%>
-   
-    <%if (@alerta.informe.nota6<=3)%>
-    <p class="text-danger">¿Cómo estima que ha sido su actitud al asistir a clases? : <%=@alerta.informe.nota6%></p> 
-    <%else%>
-    <p>¿Cómo estima que ha sido su actitud al asistir a clases? : <%=@alerta.informe.nota6%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota7<=3)%>
-    <p class="text-danger"> En función a las clases asistidas, ¿cómo cumplen con sus expectativas vocacionales? : <%=@alerta.informe.nota7%></p> 
-    <%else%>
-    <p> En función a las clases asistidas, ¿cómo cumplen con sus expectativas vocacionales? : <%=@alerta.informe.nota7%></p>
-    <%end%>
-   
-   <%if (@alerta.informe.nota8<=3)%>
-    <p class="text-danger"> ¿Cómo se ha sentido en los últimos días respecto a su decisión de cursar esta carrera universitaria? : <%=@alerta.informe.nota8%></p> 
-    <%else%>
-    <p> ¿Cómo se ha sentido en los últimos días respecto a su decisión de cursar esta carrera universitaria? : <%=@alerta.informe.nota8%></p> 
-    <%end%>
-    
-   <%if (@alerta.informe.nota9<=3)%>
-    <p class="text-danger">¿Cómo se siente luego de obtener una calificación que no esperaba? : <%=@alerta.informe.nota9%></p> 
-    <%else%>
-    <p> ¿Cómo se siente luego de obtener una calificación que no esperaba? : <%=@alerta.informe.nota9%></p> 
-    <%end%>
-
-   <%if (@alerta.informe.nota10<=3)%>
-   <p class="text-danger">En el último tiempo, ¿cómo considera que influye su vocación en el futuro laboral? : <%=@alerta.informe.nota10%></p> 
-   <%else%>
-   <p> En el último tiempo, ¿cómo considera que influye su vocación en el futuro laboral? : <%=@alerta.informe.nota10%></p>
-   <%end%>
-  
-   <p class="text-danger"> Promedio Vocación : <%=@alerta.informe.promvocacion%></p> 
-
-<%end%>
-
-
-
-
-
-   <%if (@alerta.informe.nota11<=3)||(@alerta.informe.nota12<=3)||(@alerta.informe.nota13<=3)||(@alerta.informe.nota14<=3)||(@alerta.informe.nota15<=3)||(@alerta.informe.promsalud<=5)%>
-   <h5><li> Salud Fisica y Mental</li></h5>
-  <%end%>
-  
-   <%if (@alerta.informe.nota11<=3)%>
-   <p class="text-danger"> ¿Cómo cree que se relaciona con sus compañeros al momento de estudiar, aclarar dudas o solicitar contenidos? : <%=@alerta.informe.nota11%></p> 
-   <%else%>
-   <p>¿Cómo cree que se relaciona con sus compañeros al momento de estudiar, aclarar dudas o solicitar contenidos? : <%=@alerta.informe.nota11%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota12<=3)%>
-   <p class="text-danger">¿Cómo considera que se ha alimentado estos últimos días en razón a su estado de ánimo? : <%=@alerta.informe.nota12%></p> 
-   <%else%>
-   <p> ¿Cómo considera que se ha alimentado estos últimos días en razón a su estado de ánimo? : <%=@alerta.informe.nota12%></p>
-   <%end%>
-  
-  <%if (@alerta.informe.nota13<=3)%>
-   <p class="text-danger"> En razón de las actividades físicas y/o  recreativas, ¿cómo cree que han sido éstas en el último periodo? : <%=@alerta.informe.nota13%></p> 
-   <%else%>
-   <p> En razón de las actividades físicas y/o  recreativas, ¿cómo cree que han sido éstas en el último periodo? : <%=@alerta.informe.nota13%></p> 
-   <%end%>
-   
-  <%if (@alerta.informe.nota14<=3)%>
-   <p class="text-danger">¿Cómo sientes que es el aporte que brinda su grupo de compañeros y/o amigos en su salud física y mental? : <%=@alerta.informe.nota14%></p> 
-   <%else%>
-   <p> ¿Cómo sientes que es el aporte que brinda su grupo de compañeros y/o amigos en su salud física y mental? : <%=@alerta.informe.nota14%></p> 
-   <%end%>
-
-  <%if (@alerta.informe.nota15<=3)%>
-  <p class="text-danger">¿Cuál crees que es el aporte que entrega su estado mental al rendimiento académico?  : <%=@alerta.informe.nota15%></p> 
-  <%else%>
-  <p> ¿Cuál crees que es el aporte que entrega su estado mental al rendimiento académico?  : <%=@alerta.informe.nota15%></p>
-  <%end%>
-   
-  <% if @alerta.informe.promsalud<5 %>
-  <p class="text-danger"> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>   
-  <%else%>
-  <p> Promedio Salud Fisica y Mental : <%=@alerta.informe.promsalud%></p>  
-  <%end%>
-  <%end%>
-
-
-  <% if @alerta.informe.user.rol.descripcion=='Jefe de Carrera' %>
- <p class='text-danger'><%= @alerta.informe.observacion%>
-  <%end%>
+    <!-- Action Buttons -->
+    <div class="text-center mt-4">
+      <%= link_to 'Volver a Alertas', alertas_path, class: 'btn btn-secondary btn-lg' %>
+      <% if can_edit_alerta? %>
+        <%= link_to 'Editar Alerta', edit_alerta_path(@alerta), class: 'btn btn-warning btn-lg ml-2' %>
+      <% end %>
+    </div>
+  </div>
+</div>

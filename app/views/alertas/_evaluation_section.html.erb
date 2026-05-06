@@ -1,0 +1,27 @@
+<% if evaluations.any? { |eval| eval[:score] && eval[:score] > 0 } %>
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="fas fa-<%= section_icon %>"></i>
+        <%= section_title %>
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <% evaluations.each do |evaluation| %>
+          <% next unless evaluation[:score] && evaluation[:score] > 0 %>
+          <div class="col-md-6 mb-3">
+            <div class="evaluation-item">
+              <p class="mb-1 <%= score_class(evaluation[:score], evaluation[:is_average]) %>">
+                <strong><%= evaluation[:question] %>:</strong>
+                <span class="float-right badge <%= evaluation[:is_average] ? 'badge-info' : 'badge-secondary' %>">
+                  <%= evaluation[:score] %>
+                </span>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
